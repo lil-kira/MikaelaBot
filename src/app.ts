@@ -175,11 +175,10 @@ client.on('message', async message => {
 
 
    // Finally if all checks have passed then try executing the command.
-   try {
-      command.execute(message, args);
-   } catch (err) {
-      logger.log('error', err);
-   }
+   await command.execute(message, args).catch(e => {
+      logger.log('error', e);
+      sendErrorEmbed(message, e.message);
+   });
 });
 
 init();

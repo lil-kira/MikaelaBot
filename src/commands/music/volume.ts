@@ -1,6 +1,5 @@
 import { getPlayer } from '../../util/musicUtil';
 import { ICommand } from '../../classes/Command';
-import { QuickEmbed } from '../../util/styleUtil';
 import { logger } from '../../app';
 
 export const command: ICommand = {
@@ -12,14 +11,19 @@ export const command: ICommand = {
    perms: ['kira'],
    isDisabled: false,
 
-   execute(message, args) {
+   async execute(message, args) {
       // if (!args.find(arg => arg === '-f')) return;
 
       const arg = args.shift();
       const player = getPlayer(message);
-      if (!player) return logger.log('info','no player found while using volume command');
+      if (!player) {
+         logger.log('info', 'no player found while using volume command');
+         return;
+      }
 
-      if (!arg) return QuickEmbed(message, `Volume is currently ${player.volume}`);
+      if (!arg) {
+         throw Error(`Volume is currently ${player.volume}`);
+      }
 
       let amount: number | undefined;
 

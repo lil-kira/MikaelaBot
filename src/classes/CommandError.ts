@@ -1,9 +1,7 @@
 export class CommandError {
-    constructor(message: string, trace?: string) {
-        this.message = message;
-        this.trace = trace;
-    }
+   constructor(message: string) {
+      this.message = message;
+   }
 
-    message: string;
-    trace?: string;
+   message: string;
 }

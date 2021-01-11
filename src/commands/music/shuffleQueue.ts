@@ -11,17 +11,20 @@ export const command: ICommand = {
     aliases: ['sq', 'shuffleq', 'shufflequeue'],
 
     async execute(message, args) {
-        const player = getPlayer(message);
-        if (!player) return logger.log('error',`Could not find player for guild ${message.guild.name}`);
+       const player = getPlayer(message);
+       if (!player) {
+          logger.log('error', `Could not find player for guild ${message.guild.name}`);
+          return;
+       }
 
-        if (!player.queue.songs || player.queue.songs.length === 0) {
-            const embed = new MessageEmbed()
-                .setTitle(`No songs currently playing to shuffle`)
-                .setColor(embedColor);
+       if (!player.queue.songs || player.queue.songs.length === 0) {
+          const embed = new MessageEmbed()
+             .setTitle(`No songs currently playing to shuffle`)
+             .setColor(embedColor);
 
-            message.channel.send(embed);
-            return;
-        }
+          await message.channel.send(embed);
+          return;
+       }
 
         player.queue.shuffle();
 
@@ -34,6 +37,6 @@ export const command: ICommand = {
             embed.addField(`${index + 1} ${song.title}`, song.url);
         });
 
-        message.channel.send(embed);
+       await message.channel.send(embed);
     },
 };

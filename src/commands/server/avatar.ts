@@ -1,7 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import { ICommand } from '../../classes/Command';
 import { getTarget } from '../../util/musicUtil';
-import { createFooter, QuickEmbed } from '../../util/styleUtil';
+import { createFooter } from '../../util/styleUtil';
+import { CommandError } from '../../classes/CommandError';
 
 export const command: ICommand = {
    name: 'avatar',
@@ -17,7 +18,7 @@ export const command: ICommand = {
 
       // If we couldnt find a user, then tell the user, and return.
       if (!target)
-         return QuickEmbed(message, `Could not find user \`${args.join(' ')}\``);
+         throw new CommandError(`Could not find user \`${args.join(' ')}\``, this);
 
       // Create the embed
       const embed: MessageEmbed = createFooter(message)
@@ -26,6 +27,6 @@ export const command: ICommand = {
          .setImage(target.displayAvatarURL({ size: 4096, dynamic: true }));
 
       // Send the embed
-      message.channel.send(embed);
+      await message.channel.send(embed);
    }
 };

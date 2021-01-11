@@ -5,7 +5,7 @@ import { ISong } from '../../classes/Player';
 import { IUser } from '../../db/dbUser';
 import { findOrCreate } from '../../db/userController';
 import { getTarget } from '../../util/musicUtil';
-import { createFooter, embedColor, QuickEmbed } from '../../util/styleUtil';
+import { createFooter, embedColor } from '../../util/styleUtil';
 
 export const command: ICommand = {
     name: 'list',
@@ -16,24 +16,24 @@ export const command: ICommand = {
     cooldown: 1,
 
     async execute(message, args) {
-
         let target = message.author
         if (args.length > 0) target = await getTarget(message, args.join(' '));
 
-        if (!target) return QuickEmbed(message, `Could not find user \`${args.join(' ')}\``)
+       if (!target) throw Error(`Could not find user \`${args.join(' ')}\``);
 
         const user = await findOrCreate(target);
 
         if (!user || !user.favorites || user.favorites.length === 0) {
-            const embed: MessageEmbed = createFooter(message)
-               .setTitle(target.username + '\n\u200b')
-               .setThumbnail(target.displayAvatarURL({ dynamic: true }))
-                .setDescription('Favorites: none')
-                .setColor(embedColor);
-            return message.channel.send(embed);
+           const embed: MessageEmbed = createFooter(message)
+              .setTitle(target.username + '\n\u200b')
+              .setThumbnail(target.displayAvatarURL({ dynamic: true }))
+              .setDescription('Favorites: none')
+              .setColor(embedColor);
+           await message.channel.send(embed);
+           return;
         }
 
-        ListFavorites(message, target, user);
+       await ListFavorites(message, target, user);
     },
 };
 

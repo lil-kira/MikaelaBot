@@ -11,17 +11,17 @@ export const command: ICommand = {
     usage: '[position in queue]',
     aliases: ['r'],
 
-    execute(message, args) {
-        const player = getPlayer(message);
-        if (!player) return;
+    async execute(message, args) {
+       const player = getPlayer(message);
+       if (!player) return;
 
-        const arg1 = args.shift();
-        if (!arg1) return;
+       const arg1 = args.shift();
+       if (!arg1) return;
 
-        if (Number(arg1) === NaN) {
-            QuickEmbed(message, 'Invalid position');
-        } else {
-            const pos = Number(arg1);
+       if (Number(arg1) === NaN) {
+          QuickEmbed(message, 'Invalid position');
+       } else {
+          const pos = Number(arg1);
 
             if (pos > player.queue.songs.length + 1) {
                 return QuickEmbed(message, 'Invalid position');

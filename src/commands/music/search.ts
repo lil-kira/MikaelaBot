@@ -14,7 +14,8 @@ export const command: ICommand = {
 
       if (!song) {
          embed.setTitle(`Song "${query}" not found`);
-         return message.channel.send(embed);
+         await message.channel.send(embed);
+         return;
       }
 
       if (isPlaylist(song)) {

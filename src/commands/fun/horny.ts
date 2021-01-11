@@ -11,8 +11,8 @@ export const command: ICommand = {
   name: 'Horny',
   description: 'Posts a response chosen at random to horny people 😳',
 
-  execute(message, args) {
-    const choice = Math.floor(Math.random() * links.length);
-    message.channel.send(links[choice]);
-  },
+  async execute(message, _) {
+     const choice = Math.floor(Math.random() * links.length);
+     await message.channel.send(links[choice]);
+  }
 };

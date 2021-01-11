@@ -10,14 +10,14 @@ export const command: ICommand = {
     description: 'Lists all commands',
     aliases: ['h'],
 
-    execute(message, args) {
-        const query = args.join(' ');
-        if (!query) {
-            displayAll(message);
-        } else {
-            displayOne(message, query);
-        }
-    },
+    async execute(message, args) {
+       const query = args.join(' ');
+       if (!query) {
+          displayAll(message);
+       } else {
+          displayOne(message, query);
+       }
+    }
 };
 
 function displayAll(message: Message) {

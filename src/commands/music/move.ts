@@ -11,17 +11,17 @@ export const command: ICommand = {
     args: true,
     usage: '[song position] [desired position]',
 
-    execute(message, args) {
-        const player = getPlayer(message)
-        if (player.getQueueCount() === 0) return QuickEmbed(message, 'Queue is empty')
+    async execute(message, args) {
+       const player = getPlayer(message);
+       if (player.getQueueCount() === 0) return QuickEmbed(message, 'Queue is empty');
 
-        if (args.length < 2) return QuickEmbed(message, 'Not enough arguments..')
+       if (args.length < 2) return QuickEmbed(message, 'Not enough arguments..');
 
-        let songPos: string | number = args.shift();
-        let toPos: string | number = args.shift();
+       let songPos: string | number = args.shift();
+       let toPos: string | number = args.shift();
 
-        songPos = Number(songPos)
-        toPos = Number(toPos)
+       songPos = Number(songPos);
+       toPos = Number(toPos);
 
         if (songPos === toPos) return QuickEmbed(message, `Cannot move song to the same position`)
 

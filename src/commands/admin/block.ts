@@ -4,6 +4,7 @@ import { ICommand } from '../../classes/Command';
 import { AddBlocked, blockedUsers } from '../../db/dbBlocked';
 import { getTarget } from '../../util/musicUtil';
 import { createFooter, QuickEmbed, wrap } from '../../util/styleUtil';
+import { CommandError } from '../../classes/CommandError';
 
 export const command: ICommand = {
    name: 'Block',
@@ -23,20 +24,20 @@ export const command: ICommand = {
       if (!target) return QuickEmbed(message, `Member \"${query}\" not found`);
 
       if (blockedUsers.has(target.id))
-         return QuickEmbed(message, `Member \"${target.tag}\" is already blocked`);
+         throw new CommandError(`Member \"${target.tag}\" is already blocked`);
 
       const blockedResponse = await AddBlocked(target.tag, target.id);
       logger.log('info', blockedResponse);
 
       if (!blockedResponse) {
-         return message.author.send(`Error while blocking user: ${query}`);
+         throw new Error(`Error while blocking user: ${query}`);
       }
 
       const embed = createFooter(message)
          .setTitle(`Blocked: \"${target.tag}\"`)
          .setDescription(target.id);
 
-      message.channel.send(embed);
+      await message.channel.send(embed);
    }
 };
 

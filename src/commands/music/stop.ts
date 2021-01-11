@@ -6,10 +6,10 @@ export const command: ICommand = {
     description: 'stops the music player',
     aliases: ['end', 's', 'disconnect', 'leave', 'quit'],
 
-    execute(message, args) {
-        const player = getPlayer(message);
-        if (player) {
-            player.leave();
-        }
-    },
+    async execute(message, args) {
+       const player = getPlayer(message);
+       if (player) {
+          player.leave();
+       }
+    }
 };

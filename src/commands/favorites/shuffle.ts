@@ -2,7 +2,7 @@ import { logger } from '../../app';
 import { ICommand } from '../../classes/Command';
 import { findOrCreate } from '../../db/userController';
 import { getPlayer, getTarget } from '../../util/musicUtil';
-import { createFooter, embedColor, QuickEmbed } from '../../util/styleUtil';
+import { createFooter, embedColor } from '../../util/styleUtil';
 
 export const command: ICommand = {
     name: 'shuffle',
@@ -24,29 +24,32 @@ export const command: ICommand = {
         let target = message.author
         if (args.length > 0) target = await getTarget(message, args.join(' '));
 
-        if (!target) return QuickEmbed(message, `Could not find user \`${args.join(' ')}\``)
+       if (!target) throw Error(`Could not find user \`${args.join(' ')}\``);
 
-        const user = await findOrCreate(target);
+       const user = await findOrCreate(target);
 
-        if (!user.favorites) {
-            return QuickEmbed(message, 'You have no favorites to shuffle');
-        }
+       if (!user.favorites) {
+          throw Error('You have no favorites to shuffle');
+       }
 
-        const embed = createFooter(message);
-        embed.setColor(embedColor);
+       const embed = createFooter(message);
+       embed.setColor(embedColor);
 
-        const player = getPlayer(message);
-        if (!player) return logger.log('error', `Could not find player for guild ${message.guild.name}`);
+       const player = getPlayer(message);
+       if (!player) {
+          logger.log('error', `Could not find player for guild ${message.guild.name}`);
+          return;
+       }
 
-        if (amount > 15) {
-            embed.setFooter(`Max Amount is 15!`);
-            amount = 15;
-        }
+       if (amount > 15) {
+          embed.setFooter(`Max Amount is 15!`);
+          amount = 15;
+       }
 
-        const title = `Shuffling ${amount} ${amount > 1 ? 'songs' : 'song'} from ${user.username}`;
+       const title = `Shuffling ${amount} ${amount > 1 ? 'songs' : 'song'} from ${user.username}`;
 
-        const firstSong = user.favorites[Math.floor(Math.random() * user.favorites.length)];
-        player.addSong(firstSong, message);
+       const firstSong = user.favorites[Math.floor(Math.random() * user.favorites.length)];
+       player.addSong(firstSong, message);
 
         embed.setTitle(title);
         embed.setDescription(`Playing ${firstSong.title}\n${firstSong.url}\n\u200b`);

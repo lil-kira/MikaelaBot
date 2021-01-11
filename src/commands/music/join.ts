@@ -5,13 +5,13 @@ export const command: ICommand = {
     name: 'join',
     description: 'Joins voice',
 
-    execute(message, args) {
-        //Get the guilds player
-        const player = getPlayer(message);
+    async execute(message, _) {
+       //Get the guilds player
+       const player = getPlayer(message);
 
-        if (player) {
-            //Join the VoiceChannel
-            player.join(message);
-        }
-    },
+       if (player) {
+          //Join the VoiceChannel
+          player.join(message);
+       }
+    }
 };

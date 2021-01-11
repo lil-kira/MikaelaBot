@@ -8,16 +8,16 @@ export const command: ICommand = {
     description: 'Shows info of the current server',
     aliases: ['srvinfo', 'guild'],
 
-    execute(message, _) {
-        let guild = message.guild;
-        let embed: MessageEmbed = createFooter(message);
+    async execute(message, _) {
+       let guild = message.guild;
+       let embed: MessageEmbed = createFooter(message);
 
-        embed.setTitle('Server info');
+       embed.setTitle('Server info');
 
-        let description: string = guild.description || `Server info for ${guild}`;
-        embed.setDescription(description);
+       let description: string = guild.description || `Server info for ${guild}`;
+       embed.setDescription(description);
 
-        embed.setThumbnail(guild.iconURL({ size: 1024 }));
+       embed.setThumbnail(guild.iconURL({ size: 1024 }));
 
         embed.addField('Server ID', `\`${guild.id}\``);
         embed.addField('Created at', guild.createdAt.toUTCString());
@@ -25,6 +25,6 @@ export const command: ICommand = {
         embed.addField('Members', guild.memberCount, true);
         embed.addField('Region', guild.region, true);
 
-        message.channel.send(embed);
+       await message.channel.send(embed);
     },
 };
