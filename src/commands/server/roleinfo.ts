@@ -18,7 +18,7 @@ export const command: ICommand = {
         }
 
         await sendEmbed(message, role);
-    },
+    }
 };
 
 async function sendEmbed(message: Message, role: Role) {
@@ -34,7 +34,7 @@ async function sendEmbed(message: Message, role: Role) {
     await message.channel.send(embed);
 }
 
-async function addFields(embed: MessageEmbed, role: Role) {
+function addFields(embed: MessageEmbed, role: Role) {
     embed.addField('Role ID', `\`${role.id}\``);
     embed.addField('Created at', role.createdAt.toUTCString());
     embed.addField('Hoist', role.hoist, true);

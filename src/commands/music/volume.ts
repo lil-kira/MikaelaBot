@@ -22,7 +22,8 @@ export const command: ICommand = {
       }
 
       if (!arg) {
-         throw Error(`Volume is currently ${player.volume}`);
+          await message.channel.send(`Volume is currently ${player.volume}`);
+          return;
       }
 
       let amount: number | undefined;

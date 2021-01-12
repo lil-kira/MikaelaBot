@@ -63,5 +63,15 @@
     "events": {
       "start": "cls || clear"
     }
+  },
+  "prettier": {
+    "printWidth": 120,
+    "tabWidth": 3,
+    "semi": true,
+    "useTabs": false,
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "trailingComma": "none",
+    "rangeStart": 120
   }
 }

@@ -1,6 +1,6 @@
 import { ICommand } from '../../classes/Command';
 
-const githubLink = 'https://github.com/kira0x1/mikaela'
+const githubLink = 'https://github.com/kira0x1/mikaela';
 
 export const command: ICommand = {
     name: 'Github',
@@ -8,6 +8,6 @@ export const command: ICommand = {
     aliases: ['git', 'code'],
 
     async execute(message, args) {
-        message.channel.send(`> **Mikaela's Github**\n${githubLink}`);
-    },
+        await message.channel.send(`> **Mikaela's Github**\n${githubLink}`);
+    }
 };

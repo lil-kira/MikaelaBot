@@ -1,6 +1,6 @@
 import { ICommand } from '../../classes/Command';
 
-const pogLink = 'https://cdn.discordapp.com/attachments/709803931878031404/751941837673201684/Poggers.mp4'
+const pogLink = 'https://cdn.discordapp.com/attachments/709803931878031404/751941837673201684/Poggers.mp4';
 
 export const command: ICommand = {
    name: 'poggers',

@@ -1,9 +1,9 @@
-import { ICommand } from '../../classes/Command';
+import {ICommand} from "../../classes/Command";
 
 export const command: ICommand = {
-    name: 'AutoQueue',
+    name: "AutoQueue",
     description: "Auto Queue's random song's from peoples favorites",
-    aliases: ['aq'],
+    aliases: ["aq"],
     args: false,
 
     async execute(message, args) {

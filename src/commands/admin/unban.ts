@@ -1,7 +1,7 @@
 import { ICommand } from '../../classes/Command';
 import { User } from 'discord.js';
-import { sendErrorEmbed } from '../../util/styleUtil';
-import { toEmbed, UserEventInfo, UserEventType } from '../../classes/UserEventInfo';
+import {toEmbed, UserEventInfo, UserEventType} from '../../classes/UserEventInfo';
+import {CommandError} from "../../classes/CommandError";
 
 export const command: ICommand = {
    name: 'unban',
@@ -18,7 +18,7 @@ export const command: ICommand = {
          (await message.client.users.fetch(args[0]).catch(() => undefined));
 
       if (!user) {
-         return sendErrorEmbed(message, `Could not find user ${args[0]}`);
+          throw new CommandError(`Could not find user ${args[0]}`, this);
       }
 
       const banInfo: { user: User; reason?: string } = await message.guild
@@ -26,7 +26,7 @@ export const command: ICommand = {
          .catch(() => undefined);
 
       if (!banInfo) {
-         return sendErrorEmbed(message, `${user} is not banned`);
+          throw new CommandError(`${user} is not banned`, this);
       }
 
       const reason = args.slice(1).join(' ');

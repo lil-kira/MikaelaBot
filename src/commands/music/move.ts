@@ -1,9 +1,8 @@
-import { ICommand } from '../../classes/Command';
-import { ISong } from '../../classes/Player';
-import { getPlayer } from '../../util/musicUtil';
-import { createFooter, embedColor, QuickEmbed, wrap } from '../../util/styleUtil';
-
-
+import {ICommand} from '../../classes/Command';
+import {ISong} from '../../classes/Player';
+import {getPlayer} from '../../util/musicUtil';
+import {createFooter, embedColor, wrap} from '../../util/styleUtil';
+import {CommandError} from '../../classes/CommandError';
 
 export const command: ICommand = {
     name: 'Move',
@@ -12,47 +11,45 @@ export const command: ICommand = {
     usage: '[song position] [desired position]',
 
     async execute(message, args) {
-       const player = getPlayer(message);
-       if (player.getQueueCount() === 0) return QuickEmbed(message, 'Queue is empty');
+        const player = getPlayer(message);
+        if (player.getQueueCount() === 0) throw new CommandError('Queue is empty', this);
 
-       if (args.length < 2) return QuickEmbed(message, 'Not enough arguments..');
+        if (args.length < 2) throw new CommandError('Not enough arguments..', this);
 
-       let songPos: string | number = args.shift();
-       let toPos: string | number = args.shift();
+        let songPos: string | number = args.shift();
+        let toPos: string | number = args.shift();
 
-       songPos = Number(songPos);
-       toPos = Number(toPos);
+        songPos = Number(songPos);
+        toPos = Number(toPos);
 
-        if (songPos === toPos) return QuickEmbed(message, `Cannot move song to the same position`)
+        if (songPos === toPos) throw new CommandError(`Cannot move song to the same position`, this);
 
         songPos--;
         toPos--;
 
-        const songSelected = player.queue.songs[songPos]
-        const otherSong = player.queue.songs[toPos]
+        const songSelected = player.queue.songs[songPos];
+        const otherSong = player.queue.songs[toPos];
 
-        if (!songSelected || !otherSong)
-            return QuickEmbed(message, 'Song position incorrect')
+        if (!songSelected || !otherSong) throw new CommandError('Song position incorrect', this);
 
-        player.queue.songs[toPos] = songSelected
-        player.queue.songs[songPos] = otherSong
+        player.queue.songs[toPos] = songSelected;
+        player.queue.songs[songPos] = otherSong;
 
-        songPos++
-        toPos++
+        songPos++;
+        toPos++;
 
         const embed = createFooter(message)
             .setColor(embedColor)
             .setTitle(`Moved songs in queue`)
-            .addField(`\u200b`, `${moveString(songSelected, toPos)}\n\n${moveString(otherSong, songPos)}\n\u200b`)
+            .addField(`\u200b`, `${moveString(songSelected, toPos)}\n\n${moveString(otherSong, songPos)}\n\u200b`);
 
         // embed.fields.push(createEmptyField())
 
-        message.channel.send(embed)
+        await message.channel.send(embed);
     }
-}
+};
 
 function moveString(song: ISong, toPos: number) {
-    let to: string = wrap(toPos.toString())
-    return `**Moved Song:**  ${song.title}\n**To Position: ${to}**`
+    let to: string = wrap(toPos.toString());
+    return `**Moved Song:**  ${song.title}\n**To Position: ${to}**`;
 }
-

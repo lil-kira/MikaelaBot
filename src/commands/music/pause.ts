@@ -1,8 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import {MessageEmbed} from 'discord.js';
 
-import { getPlayer } from '../../util/musicUtil';
-import { ICommand } from '../../classes/Command';
-import { embedColor, QuickEmbed } from '../../util/styleUtil';
+import {getPlayer} from '../../util/musicUtil';
+import {ICommand} from '../../classes/Command';
+import {embedColor} from '../../util/styleUtil';
+import {CommandError} from '../../classes/CommandError';
 
 export const command: ICommand = {
     name: 'Pause',
@@ -10,7 +11,7 @@ export const command: ICommand = {
     aliases: ['ps'],
     hidden: true,
 
-    async execute(message, args) {
+    async execute(message, _) {
         //Get the guilds player
         const player = getPlayer(message);
 
@@ -19,19 +20,19 @@ export const command: ICommand = {
 
         //If theres no song playing or if the stream dispatcher is undefined exit out
         if (!player.currentlyPlaying || !player.getStream())
-            return QuickEmbed(message, `No song currently playing to pause`);
+            throw new CommandError(`No song currently playing to pause`, this);
 
         //If the stream is already paused exit out
-        if (player.stream.paused) return QuickEmbed(message, `Player is already paused`);
+        if (player.stream.paused) throw new CommandError(`Player is already paused`, this);
 
         //Pause the player
         player.pause();
 
         const embed = new MessageEmbed();
-        embed.setAuthor(message.author.username, message.author.displayAvatarURL({ dynamic: true }));
+        embed.setAuthor(message.author.username, message.author.displayAvatarURL({dynamic: true}));
         embed.setTitle(`Paused ${player.currentlyPlaying.title}`);
         embed.setColor(embedColor);
 
-        message.channel.send(embed);
-    },
+        await message.channel.send(embed);
+    }
 };

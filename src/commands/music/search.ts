@@ -27,11 +27,11 @@ export const command: ICommand = {
             embed.addField(`${i + 1} ${songs[i].title}`, songs[i].url);
          }
 
-         message.channel.send(embed);
+         await message.channel.send(embed);
          return;
       }
 
-      embed.setTitle(song.title).setDescription(song.duration.duration);
-      message.channel.send(embed);
+       embed.setTitle(song.title).setDescription(song.duration.duration);
+       await message.channel.send(embed);
    }
 };

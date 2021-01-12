@@ -1,8 +1,8 @@
 import { MessageEmbed } from 'discord.js';
-import { ICommand } from '../../classes/Command';
-import { embedColor, QuickEmbed } from '../../util/styleUtil';
-import { findFavorite } from './play';
-
+import {ICommand} from '../../classes/Command';
+import {embedColor} from '../../util/styleUtil';
+import {findFavorite} from './play';
+import {CommandError} from '../../classes/CommandError';
 
 export const command: ICommand = {
     name: 'info',
@@ -13,9 +13,9 @@ export const command: ICommand = {
 
     async execute(message, args) {
         const favInfo = await findFavorite(message, args);
-        const song = favInfo.song
+        const song = favInfo.song;
 
-        if (!song || song instanceof Array) return QuickEmbed(message, `Song not found`)
+        if (!song || song instanceof Array) throw new CommandError(`Song not found`, this);
 
         const embed = new MessageEmbed()
             .setColor(embedColor)
@@ -25,6 +25,6 @@ export const command: ICommand = {
             .addField('Duration', song.duration.duration)
             .setURL(song.url);
 
-        message.channel.send(embed);
-    },
+        await message.channel.send(embed);
+    }
 };

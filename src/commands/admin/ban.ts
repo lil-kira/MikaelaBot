@@ -1,7 +1,7 @@
 import { ICommand } from '../../classes/Command';
 import { GuildMember, User } from 'discord.js';
-import { sendErrorEmbed } from '../../util/styleUtil';
-import { toEmbed, UserEventInfo, UserEventType } from '../../classes/UserEventInfo';
+import {toEmbed, UserEventInfo, UserEventType} from '../../classes/UserEventInfo';
+import {CommandError} from '../../classes/CommandError';
 
 export const command: ICommand = {
    name: 'ban',
@@ -13,32 +13,26 @@ export const command: ICommand = {
    botPerms: ['BAN_MEMBERS'],
 
    async execute(message, args) {
-      let user: User =
-         message.mentions.users?.first() ||
-         (await message.client.users.fetch(args[0]).catch(() => undefined));
+       let user: User =
+           message.mentions.users?.first() || (await message.client.users.fetch(args[0]).catch(() => undefined));
 
       if (!user) {
-         return sendErrorEmbed(message, `Could not find user ${args[0]}`);
+          throw new CommandError(`Could not find user ${args[0]}`, this);
       }
       if (user instanceof GuildMember && !user.bannable) {
-         return sendErrorEmbed(message, `Cannot kick ${user}`);
+          throw new CommandError(`Cannot kick ${user}`, this);
       }
 
-      const banInfo: { user: User; reason?: string } = await message.guild
-         .fetchBan(user)
-         .catch(() => undefined);
+       const banInfo: { user: User; reason?: string } = await message.guild.fetchBan(user).catch(() => undefined);
 
       if (banInfo) {
-         return sendErrorEmbed(message, `${user} is already banned`);
+          throw new CommandError(`${user} is already banned`, command);
       }
 
       const deleteMessageDays = +args.slice(-1) || 0;
 
       if (deleteMessageDays < 0 || deleteMessageDays > 7) {
-         return sendErrorEmbed(
-            message,
-            `Can only delete messages between 0 and 7 days, was ${deleteMessageDays}`
-         );
+          throw new CommandError(`Can only delete messages between 0 and 7 days, was ${deleteMessageDays}`, this);
       }
 
       const reason = args.slice(1, -1).join(' ');

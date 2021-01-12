@@ -11,7 +11,7 @@ export const command: ICommand = {
 
        if (player) {
           //Join the VoiceChannel
-          player.join(message);
+          await player.join(message);
        }
     }
 };

@@ -1,7 +1,6 @@
 import { ICommand } from '../../classes/Command';
 
-const yubiLink =
-   'https://cdn.discordapp.com/attachments/644126670080573460/764113835291705384/korone_yaaay.webm';
+const yubiLink = 'https://cdn.discordapp.com/attachments/644126670080573460/764113835291705384/korone_yaaay.webm';
 
 export const command: ICommand = {
    name: 'yubi',

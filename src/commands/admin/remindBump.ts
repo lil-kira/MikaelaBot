@@ -8,6 +8,6 @@ export const command: ICommand = {
     perms: ['kira'],
 
     async execute(message, args) {
-        setReminder(message, '2h', 'Bump');
+        await setReminder(message, '2h', 'Bump');
     },
 };

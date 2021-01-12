@@ -1,24 +1,21 @@
-import { GuildMember, Message, MessageEmbed } from 'discord.js';
-import { ICommand } from '../../classes/Command';
-import { getTargetMember } from '../../util/musicUtil';
-import { createFooter, QuickEmbed } from '../../util/styleUtil';
+import {GuildMember, Message, MessageEmbed} from 'discord.js';
+import {ICommand} from '../../classes/Command';
+import {getTargetMember} from '../../util/musicUtil';
+import {createFooter} from '../../util/styleUtil';
+import {CommandError} from '../../classes/CommandError';
 
 export const command: ICommand = {
-   name: 'userinfo',
-   description: 'Shows information of a user',
-   aliases: ['info', 'user', 'uinfo'],
+    name: 'userinfo',
+    description: 'Shows information of a user',
+    aliases: ['info', 'user', 'uinfo'],
 
-   async execute(message, args) {
-      const target =
-         args.length > 0
-            ? await getTargetMember(message, args.join(' '))
-            : message.member;
+    async execute(message, args) {
+        const target = args.length > 0 ? await getTargetMember(message, args.join(' ')) : message.member;
 
-      if (!target)
-         return QuickEmbed(message, `Could not find user \`${args.join(' ')}\``);
+        if (!target) throw new CommandError(`Could not find user \`${args.join(' ')}\``, this);
 
       const embed = await createEmbed(message, target);
-      message.channel.send(embed);
+        await message.channel.send(embed);
    }
 };
 
@@ -31,16 +28,13 @@ async function createEmbed(message: Message, target: GuildMember): Promise<Messa
       .addField('Created at', target.user.createdAt.toUTCString())
       .addField('Joined at', target.joinedAt.toUTCString());
 
-   if (
-      message.guild.me.hasPermission('VIEW_AUDIT_LOG') &&
-      message.member.hasPermission('VIEW_AUDIT_LOG')
-   ) {
-      const previousNicks = await getPreviousNicks(target);
+    if (message.guild.me.hasPermission('VIEW_AUDIT_LOG') && message.member.hasPermission('VIEW_AUDIT_LOG')) {
+        const previousNicks = await getPreviousNicks(target);
 
-      if (previousNicks.length > 0) {
-         embed.addField('Previous nicknames', previousNicks.join(', '));
-      }
-   }
+        if (previousNicks.length > 0) {
+            embed.addField('Previous nicknames', previousNicks.join(', '));
+        }
+    }
 
    return embed;
 }

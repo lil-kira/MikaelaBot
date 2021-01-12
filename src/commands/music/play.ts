@@ -1,32 +1,33 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { logger } from '../../app';
-import { ICommand } from '../../classes/Command';
-import { ISong } from '../../classes/Player';
-import { convertPlaylistToSongs, getSong, isPlaylist } from '../../util/apiUtil';
-import { createFavoriteCollector, getPlayer } from '../../util/musicUtil';
-import { createFooter, embedColor, QuickEmbed } from '../../util/styleUtil';
+import {Message, MessageEmbed} from 'discord.js';
+import {logger} from '../../app';
+import {ICommand} from '../../classes/Command';
+import {ISong} from '../../classes/Player';
+import {convertPlaylistToSongs, getSong, isPlaylist} from '../../util/apiUtil';
+import {createFavoriteCollector, getPlayer} from '../../util/musicUtil';
+import {createFooter, embedColor} from '../../util/styleUtil';
+import {CommandError} from "../../classes/CommandError";
 
 export const command: ICommand = {
-   name: 'play',
-   description: 'Play a song',
-   aliases: ['p'],
-   usage: '[song]',
-   args: true,
+    name: 'play',
+    description: 'Play a song',
+    aliases: ['p'],
+    usage: '[song]',
+    args: true,
 
-   async execute(message: Message, args: string[]) {
-      //Get the users query
+    async execute(message: Message, args: string[]) {
+        //Get the users query
       let query = args.join(' ');
 
       //Make sure the user is in voice
       if (!message.member.voice.channel) {
-         return QuickEmbed(message, `You must be in a voice channel to play music`);
+          throw new CommandError(`You must be in a voice channel to play music`, this);
       }
 
       //Search for song
       const song = await getSong(query);
 
       //If song not found, tell the user.
-      if (!song) return QuickEmbed(message, 'Song not found');
+        if (!song) throw new CommandError('Song not found', this);
 
       if (isPlaylist(song)) {
          const player = getPlayer(message);

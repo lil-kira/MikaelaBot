@@ -1,7 +1,11 @@
-export class CommandError {
-   constructor(message: string) {
-      this.message = message;
-   }
+import {ICommand} from './Command';
 
-   message: string;
+export class CommandError {
+    constructor(message: string, command: ICommand) {
+        this.message = message;
+        this.command = command;
+    }
+
+    message: string;
+    command: ICommand;
 }

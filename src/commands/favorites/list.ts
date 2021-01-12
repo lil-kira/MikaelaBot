@@ -5,7 +5,8 @@ import { ISong } from '../../classes/Player';
 import { IUser } from '../../db/dbUser';
 import { findOrCreate } from '../../db/userController';
 import { getTarget } from '../../util/musicUtil';
-import { createFooter, embedColor } from '../../util/styleUtil';
+import {createFooter, embedColor} from '../../util/styleUtil';
+import {CommandError} from '../../classes/CommandError';
 
 export const command: ICommand = {
     name: 'list',
@@ -16,25 +17,25 @@ export const command: ICommand = {
     cooldown: 1,
 
     async execute(message, args) {
-        let target = message.author
+        let target = message.author;
         if (args.length > 0) target = await getTarget(message, args.join(' '));
 
-       if (!target) throw Error(`Could not find user \`${args.join(' ')}\``);
+        if (!target) throw new CommandError(`Could not find user \`${args.join(' ')}\``, this);
 
         const user = await findOrCreate(target);
 
         if (!user || !user.favorites || user.favorites.length === 0) {
-           const embed: MessageEmbed = createFooter(message)
-              .setTitle(target.username + '\n\u200b')
-              .setThumbnail(target.displayAvatarURL({ dynamic: true }))
-              .setDescription('Favorites: none')
-              .setColor(embedColor);
-           await message.channel.send(embed);
-           return;
+            const embed: MessageEmbed = createFooter(message)
+                .setTitle(target.username + '\n\u200b')
+                .setThumbnail(target.displayAvatarURL({dynamic: true}))
+                .setDescription('Favorites: none')
+                .setColor(embedColor);
+            await message.channel.send(embed);
+            return;
         }
 
-       await ListFavorites(message, target, user);
-    },
+        await ListFavorites(message, target, user);
+    }
 };
 
 async function ListFavorites(message: Message, target: User, user: IUser) {
@@ -59,7 +60,7 @@ async function ListFavorites(message: Message, target: User, user: IUser) {
     }
 
     let pageAt = 0;
-    const embed = new MessageEmbed().setColor(embedColor).setThumbnail(target.displayAvatarURL({ dynamic: true }));
+    const embed = new MessageEmbed().setColor(embedColor).setThumbnail(target.displayAvatarURL({dynamic: true}));
 
     let title = `**Favorites**\nPage **${pageAt + 1} / ${pages.size}**`;
     title += `\nSongs **${user.favorites.length}**`;
@@ -90,7 +91,7 @@ async function ListFavorites(message: Message, target: User, user: IUser) {
         return (reaction.emoji.name === '➡' || reaction.emoji.name === '⬅') && !userReacted.bot;
     };
 
-    const collector = msg.createReactionCollector(filter, { time: ms('3h') });
+    const collector = msg.createReactionCollector(filter, {time: ms('3h')});
 
     let currentPage = 0;
 
@@ -110,7 +111,7 @@ async function ListFavorites(message: Message, target: User, user: IUser) {
         title += '\n\u200b';
 
         const newEmbed = new MessageEmbed()
-           .setThumbnail(target.displayAvatarURL({ dynamic: true }))
+            .setThumbnail(target.displayAvatarURL({dynamic: true}))
             .setTitle(title)
             .setColor(embedColor);
 
@@ -131,5 +132,5 @@ async function ListFavorites(message: Message, target: User, user: IUser) {
 
     collector.on('end', collected => {
         msg.reactions.removeAll();
-    })
+    });
 }

@@ -8,11 +8,11 @@ const bonkTwo = 'https://cdn.discordapp.com/attachments/702091543514710027/78456
 const links = [dogeBonk, dogeHorny, underArrest, bonkTwo];
 
 export const command: ICommand = {
-  name: 'Horny',
-  description: 'Posts a response chosen at random to horny people 😳',
+    name: 'Horny',
+    description: 'Posts a response chosen at random to horny people 😳',
 
-  async execute(message, _) {
-     const choice = Math.floor(Math.random() * links.length);
-     await message.channel.send(links[choice]);
-  }
+    async execute(message, _) {
+        const choice = Math.floor(Math.random() * links.length);
+        await message.channel.send(links[choice]);
+    }
 };

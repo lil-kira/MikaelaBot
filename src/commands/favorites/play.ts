@@ -2,9 +2,10 @@ import { Message, User } from 'discord.js';
 import { ICommand } from '../../classes/Command';
 import { ISong } from '../../classes/Player';
 import { findOrCreate } from '../../db/userController';
-import { getPlayer, getTarget } from '../../util/musicUtil';
-import { createFooter, QuickEmbed } from '../../util/styleUtil';
-import { playSong } from '../music/play';
+import {getPlayer, getTarget} from '../../util/musicUtil';
+import {createFooter} from '../../util/styleUtil';
+import {playSong} from '../music/play';
+import {CommandError} from "../../classes/CommandError";
 
 export const command: ICommand = {
     name: 'play',
@@ -19,42 +20,38 @@ export const command: ICommand = {
         if (!player) return;
 
         if (!player.inVoice && !message.member.voice.channel)
-            return QuickEmbed(message, `You must be in a voice channel to play music`);
+            throw new CommandError(`You must be in a voice channel to play music`, this);
 
-        try {
-            const res = await findFavorite(message, args);
+        const res = await findFavorite(message, args);
 
-            if (!(res.song instanceof Array)) {
-                playSong(message, res.song);
-                return
-            }
-
-            const embed = createFooter(message)
-
-            let amount = res.song.length
-            if (amount > 15) {
-                embed.setFooter("Max Amount is 15!")
-                amount = 15
-            }
-
-            const firstSong = res.song.shift()
-            player.addSong(firstSong, message)
-
-            embed.setTitle(`Playing ${amount} ${amount > 1 ? 'songs' : 'song'} from ${res.target.username}`)
-               .setDescription(`Playing ${firstSong.title}\n${firstSong.url}\n\u200b`)
-               .setAuthor(message.author.username, message.author.displayAvatarURL({ dynamic: true }))
-               .setThumbnail(res.target.displayAvatarURL({ dynamic: true }));
-
-            for (let i = 0; i < amount - 1; i++) {
-                const song = res.song[i]
-                embed.addField(`${i + 1} ${song.title}`, song.url)
-                player.queue.addSong(song)
-            }
-
-            message.channel.send(embed)
-        } catch (err) {
-            QuickEmbed(message, err);
+        if (!(res.song instanceof Array)) {
+            await playSong(message, res.song);
+            return
         }
+
+        const embed = createFooter(message)
+
+        let amount = res.song.length
+        if (amount > 15) {
+            embed.setFooter("Max Amount is 15!")
+            amount = 15
+        }
+
+        const firstSong = res.song.shift()
+        await player.addSong(firstSong, message)
+
+        embed.setTitle(`Playing ${amount} ${amount > 1 ? 'songs' : 'song'} from ${res.target.username}`)
+            .setDescription(`Playing ${firstSong.title}\n${firstSong.url}\n\u200b`)
+            .setAuthor(message.author.username, message.author.displayAvatarURL({dynamic: true}))
+            .setThumbnail(res.target.displayAvatarURL({dynamic: true}));
+
+        for (let i = 0; i < amount - 1; i++) {
+            const song = res.song[i]
+            embed.addField(`${i + 1} ${song.title}`, song.url)
+            player.queue.addSong(song)
+        }
+
+        await message.channel.send(embed)
     },
 };
 

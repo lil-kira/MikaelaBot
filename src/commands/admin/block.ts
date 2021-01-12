@@ -2,9 +2,9 @@ import { Message } from 'discord.js';
 import { logger } from '../../app';
 import { ICommand } from '../../classes/Command';
 import { AddBlocked, blockedUsers } from '../../db/dbBlocked';
-import { getTarget } from '../../util/musicUtil';
-import { createFooter, QuickEmbed, wrap } from '../../util/styleUtil';
-import { CommandError } from '../../classes/CommandError';
+import {getTarget} from '../../util/musicUtil';
+import {createFooter, wrap} from '../../util/styleUtil';
+import {CommandError} from '../../classes/CommandError';
 
 export const command: ICommand = {
    name: 'Block',
@@ -21,21 +21,18 @@ export const command: ICommand = {
 
       const query = args.join(' ');
       const target = await getTarget(message, query);
-      if (!target) return QuickEmbed(message, `Member \"${query}\" not found`);
+       if (!target) throw new CommandError(`Member \"${query}\" not found`, this);
 
-      if (blockedUsers.has(target.id))
-         throw new CommandError(`Member \"${target.tag}\" is already blocked`);
+       if (blockedUsers.has(target.id)) throw new CommandError(`Member \"${target.tag}\" is already blocked`, this);
 
       const blockedResponse = await AddBlocked(target.tag, target.id);
       logger.log('info', blockedResponse);
 
       if (!blockedResponse) {
-         throw new Error(`Error while blocking user: ${query}`);
+          throw new CommandError(`Error while blocking user: ${query}`, this);
       }
 
-      const embed = createFooter(message)
-         .setTitle(`Blocked: \"${target.tag}\"`)
-         .setDescription(target.id);
+       const embed = createFooter(message).setTitle(`Blocked: \"${target.tag}\"`).setDescription(target.id);
 
       await message.channel.send(embed);
    }

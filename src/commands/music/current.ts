@@ -1,6 +1,6 @@
 import { ICommand } from '../../classes/Command';
-import { createCurrentlyPlayingEmbed, createFavoriteCollector, getPlayer } from '../../util/musicUtil';
-import { QuickEmbed } from '../../util/styleUtil';
+import {createCurrentlyPlayingEmbed, createFavoriteCollector, getPlayer} from '../../util/musicUtil';
+import {CommandError} from "../../classes/CommandError";
 
 
 export const command: ICommand = {
@@ -8,7 +8,7 @@ export const command: ICommand = {
     description: 'Display the currently playing song',
     aliases: ['np', 'playing', 'current', 'c'],
 
-    async execute(message, args) {
+    async execute(message, _) {
         //Get the guilds current player
         const player = getPlayer(message);
         if (!player) return;
@@ -16,12 +16,12 @@ export const command: ICommand = {
         const currentSong = player.currentlyPlaying;
         const stream = player.getStream();
 
-        if (!(stream && player.currentlyPlaying)) return QuickEmbed(message, 'No song currently playing');
+        if (!(stream && player.currentlyPlaying)) throw new CommandError('No song currently playing', this);
 
         //Create embed
         const embed = createCurrentlyPlayingEmbed(stream, player)
 
         const msg = await message.channel.send(embed);
-        createFavoriteCollector(currentSong, msg)
+        await createFavoriteCollector(currentSong, msg)
     },
 };

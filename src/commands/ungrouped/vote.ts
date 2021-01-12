@@ -1,18 +1,19 @@
-import { MessageEmbed } from 'discord.js';
-import { logger } from '../../app';
+import {MessageEmbed} from 'discord.js';
+import {logger} from '../../app';
 
-import { ICommand } from '../../classes/Command';
-import { embedColor, QuickEmbed } from '../../util/styleUtil';
+import {ICommand} from '../../classes/Command';
+import {embedColor} from '../../util/styleUtil';
+import {CommandError} from "../../classes/CommandError";
 
 const voteEmojis = [
-   { name: 'one' },
-   { name: 'two' },
-   { name: 'three' },
-   { name: 'four' },
-   { name: 'five' },
-   { name: 'six' },
-   { name: 'seven' },
-   { name: 'eight' },
+    {name: 'one'},
+    {name: 'two'},
+    {name: 'three'},
+    {name: 'four'},
+    {name: 'five'},
+    {name: 'six'},
+    {name: 'seven'},
+    {name: 'eight'},
    { name: 'nine' }
 ];
 
@@ -40,7 +41,7 @@ export const command: ICommand = {
       const embed = new MessageEmbed().setTitle(title).setColor(embedColor);
 
       if (votes.length > 9) {
-         return QuickEmbed(message, `max options 9`);
+          throw new CommandError(`max options 9`, this);
       }
 
       for (let i = 0; i < votes.length; i++) {
