@@ -1,5 +1,5 @@
 usersongs.json
-config.*
+config.ts
 app-local.ts
 out/
 ecosystem.config.js
