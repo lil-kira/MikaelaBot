@@ -1,5 +1,5 @@
 import { Client, Emoji, Message } from 'discord.js';
-import { coders_club_id } from '../config';
+import { owner_server_id } from '../config';
 import { logger } from '../app';
 
 export async function findUser() {
@@ -9,10 +9,10 @@ export async function findUser() {
 export let heartEmoji: Emoji;
 
 export function initEmoji(client: Client) {
-    const coders_club = client.guilds.cache.get(coders_club_id);
-    if (!coders_club) return;
+    const ownerServer = client.guilds.cache.get(owner_server_id);
+    if (!ownerServer) return;
 
-    const emoji = coders_club.emojis.cache.find(em => em.name === 'heart');
+    const emoji = ownerServer.emojis.cache.find(em => em.name === 'heart');
     if (!emoji) return logger.log('warn', `emoji not found`);
 
     heartEmoji = emoji;

@@ -1,19 +1,19 @@
 import { Client, Emoji, Message, MessageReaction, ReactionEmoji, Role, TextChannel, User } from 'discord.js';
 import { logger } from '../app';
-import { coders_club_id } from '../config';
+import { owner_server_id } from '../config';
 
 
 
 const customRoles = require('../../customRoles.json');
 
 export async function syncRoles(client: Client) {
-  const guild = client.guilds.cache.get(coders_club_id);
+  const guild = client.guilds.cache.get(owner_server_id);
   if (!guild) return;
   const channel = guild.channels.cache.get('618438576119742464');
   if (!channel) return;
 
   if (!((channel): channel is TextChannel => channel.type === 'text')(channel))
-    return logger.log('info','Couldnt find channel');
+    return logger.log('info', 'Couldnt find channel');
 
   channel.messages.fetch({ limit: 100 }).then(messages => {
     messages.map(msg => {
@@ -41,7 +41,7 @@ export async function syncRoles(client: Client) {
     const crole = section.roles.find(rl => rl.reactionName === reaction.emoji.name);
     const role = guild.roles.cache.find(rl => rl.id === crole.roleId);
 
-    if (!member || !section || !role) return logger.log('info','er');
+    if (!member || !section || !role) return logger.log('info', 'er');
 
     const rolesFound: Role[] = [];
 
@@ -77,8 +77,8 @@ async function syncEmoji(msg: Message, emoji: Emoji | ReactionEmoji) {
     if (!section) return;
     const crole = section.roles.find(rl => rl.reactionName === reaction.emoji.name);
 
-    if (!section) return logger.log('info','couldnt find section');
-    if (!crole) return logger.log('info','couldnt find crole');
+    if (!section) return logger.log('info', 'couldnt find section');
+    if (!crole) return logger.log('info', 'couldnt find crole');
 
     const role = msg.guild.roles.cache.find(rl => rl.id === crole.roleId);
     if (!member) return
