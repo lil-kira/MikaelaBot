@@ -33,7 +33,8 @@
     "start": "node .",
     "start-prod": "node . --env=production",
     "skipdb": "node . --skipDB",
-    "watch": "tsc --watch --noEmit --project tsconfig.json"
+    "watch": "tsc --watch --noEmit --project tsconfig.json",
+    "test": "mocha"
   },
   "dependencies": {
     "@discordjs/opus": "^0.4.0",
@@ -47,6 +48,7 @@
     "mongoose": "^5.11.18",
     "ms": "^2.1.3",
     "sodium": "^3.0.2",
+    "spotify-url-info": "^2.2.0",
     "spotify-web-api-node": "^5.0.2",
     "tslib": "^2.1.0",
     "utf-8-validate": "^5.0.4",
@@ -59,7 +61,8 @@
   "devDependencies": {
     "@types/ms": "^0.7.31",
     "@types/node": "^14.14.31",
-    "@types/spotify-web-api-node": "^5.0.0"
+    "@types/spotify-web-api-node": "^5.0.0",
+    "mocha": "^8.3.0"
   },
   "nodemonConfig": {
     "events": {
